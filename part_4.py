@@ -14,12 +14,17 @@ def get_upcoming_birthdays(
             user["birthday"], "%Y.%m.%d"
         ).date()
 
-        birthday_this_year = birthday_date.replace(year=today.year)
+        try:
+            birthday_this_year = birthday_date.replace(year=today.year)
+        except ValueError:
+            birthday_this_year = birthday_date.replace(year=today.year, day=28)
 
         if birthday_this_year < today:
-            birthday_this_year = birthday_this_year.replace(
-                year=today.year + 1
-            )
+            try:
+                birthday_this_year = birthday_this_year.replace(year=today.year + 1)
+            except ValueError:
+                # handling Feb29 moving to the next common year
+                birthday_this_year = birthday_date.replace(year=today.year + 1, day=28)
 
         days = birthday_this_year.toordinal() - today.toordinal()
 
